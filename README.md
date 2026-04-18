@@ -1,30 +1,30 @@
 # schema-registry-amr64-images
 
-Nieoficjalne obrazy Docker [Confluent Schema Registry](https://github.com/confluentinc/schema-registry) dla architektury `linux/arm64`, budowane natywnie na ARM64 runnerach GitHub Actions — bez QEMU, bez emulacji.
+Unofficial [Confluent Schema Registry](https://github.com/confluentinc/schema-registry) Docker images for `linux/arm64`, built natively on ARM64 GitHub Actions runners — no QEMU, no emulation.
 
-Obrazy publikowane są do [GHCR](https://github.com/orgs/nucleospl/packages?repo_name=schema-registry-amr64-images) i podpisywane cosign (keyless OIDC). Razem z obrazami publikowany jest Helm chart do instalacji Schema Registry w Kubernetes.
+Images are published to [GHCR](https://github.com/orgs/nucleospl/packages?repo_name=schema-registry-amr64-images) and signed with cosign (keyless OIDC). Each release also includes a Helm chart for installing Schema Registry on Kubernetes.
 
-## Dlaczego ten projekt?
+## Why this project?
 
-Bitnami zaprzestało publikowania obrazów `bitnami/schema-registry`. Ten projekt zastępuje je obrazami budowanymi bezpośrednio z kodu źródłowego Confluent, z pełnym wsparciem ARM64 i gotowym Helm chartem.
+Bitnami stopped publishing `bitnami/schema-registry` images. This project replaces them with images built directly from Confluent's source code, with native ARM64 support and a ready-to-use Helm chart.
 
-## Automatyczne releasy
+## Automated releases
 
-Releasy tworzone są **w pełni automatycznie**:
+Releases are created **fully automatically**:
 
-1. Workflow `check-release.yml` odpytuje Docker Hub (`confluentinc/cp-schema-registry`) **co 6 godzin**
-2. Gdy pojawi się nowy tag (np. `8.3.0`), workflow odnajduje odpowiadający branch i commit SHA w [confluentinc/schema-registry](https://github.com/confluentinc/schema-registry)
-3. Automatycznie odpala `build.yml`, który:
-   - Buduje obraz Docker na natywnym ARM64 runnerze
-   - Skanuje Trivym
-   - Pushuje do GHCR i podpisuje cosign
-   - Pakuje i publikuje Helm chart do GHCR OCI
-   - Tworzy GitHub Release z chartem jako załącznikiem
-   - Aktualizuje `versions.json`
+1. The `check-release.yml` workflow polls Docker Hub (`confluentinc/cp-schema-registry`) **every 6 hours**
+2. When a new tag is detected (e.g. `8.3.0`), it resolves the matching branch and commit SHA in [confluentinc/schema-registry](https://github.com/confluentinc/schema-registry)
+3. It triggers `build.yml`, which:
+   - Builds the Docker image on a native ARM64 runner
+   - Scans with Trivy
+   - Pushes to GHCR and signs with cosign
+   - Packages and publishes the Helm chart to GHCR OCI
+   - Creates a GitHub Release with the chart attached
+   - Updates `versions.json`
 
-Pierwsze uruchomienie (lub ponowny build konkretnej wersji) można wyzwolić ręcznie przez **Actions → Build → Run workflow**.
+The first build, or a manual rebuild of a specific version, can be triggered via **Actions → Build → Run workflow**.
 
-## Użycie
+## Usage
 
 ### Docker
 
@@ -32,7 +32,7 @@ Pierwsze uruchomienie (lub ponowny build konkretnej wersji) można wyzwolić rę
 docker pull ghcr.io/nucleospl/schema-registry-amr64-images/schema-registry:8.2.0
 ```
 
-Wymagane zmienne środowiskowe:
+Required environment variables:
 
 ```bash
 docker run --rm \
@@ -52,7 +52,7 @@ helm install schema-registry \
   --set kafka.bootstrapServers=PLAINTEXT://kafka:9092
 ```
 
-Podstawowe `values.yaml`:
+Example `values.yaml`:
 
 ```yaml
 image: ghcr.io/nucleospl/schema-registry-amr64-images/schema-registry
@@ -71,9 +71,9 @@ resources:
     memory: 768Mi
 ```
 
-Pełna lista opcji: [`charts/schema-registry/values.yaml`](charts/schema-registry/values.yaml).
+Full list of options: [`charts/schema-registry/values.yaml`](charts/schema-registry/values.yaml).
 
-### Weryfikacja podpisu (cosign)
+### Signature verification (cosign)
 
 ```bash
 cosign verify \
@@ -82,22 +82,16 @@ cosign verify \
   ghcr.io/nucleospl/schema-registry-amr64-images/schema-registry:8.2.0
 ```
 
-## Mapowanie wersji
+## Version mapping
 
-Wersje obrazów odpowiadają tagom `confluentinc/cp-schema-registry` z Docker Hub. Każdemu tagowi odpowiada branch o tej samej nazwie w [confluentinc/schema-registry](https://github.com/confluentinc/schema-registry).
+Image versions match the tags published by `confluentinc/cp-schema-registry` on Docker Hub. Each tag corresponds to a branch of the same name in [confluentinc/schema-registry](https://github.com/confluentinc/schema-registry).
 
-| Docker Hub / GHCR tag | Branch źródłowy |
-|-----------------------|-----------------|
+| GHCR tag | Source branch |
+|----------|---------------|
 | `8.2.0` | [`8.2.0`](https://github.com/confluentinc/schema-registry/tree/8.2.0) |
 | `8.1.2` | [`8.1.2`](https://github.com/confluentinc/schema-registry/tree/8.1.2) |
 
-## Powiązane projekty
+## License
 
-- [nucleospl/harbor-arm64-images](https://github.com/nucleospl/harbor-arm64-images) — Harbor ARM64
-- [confluentinc/schema-registry](https://github.com/confluentinc/schema-registry) — kod źródłowy
-- [confluentinc/cp-helm-charts](https://github.com/confluentinc/cp-helm-charts) — oryginalne charty Confluent
-
-## Licencja
-
-Kod budujący (Dockerfile, workflow, Helm chart): Apache 2.0.
-Schema Registry: [Confluent Community License](https://github.com/confluentinc/schema-registry/blob/master/LICENSE-ConfluentCommunity).
+Build tooling (Dockerfile, workflows, Helm chart): Apache 2.0.
+Schema Registry itself: [Confluent Community License](https://github.com/confluentinc/schema-registry/blob/master/LICENSE-ConfluentCommunity).
