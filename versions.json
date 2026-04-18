@@ -1,8 +1,9 @@
 {
-  "last_built":     "none",
-  "last_built_sha": "none",
-  "built_at":       "none",
+  "last_built":     "8.2.0",
+  "last_built_sha": "e7376c11927695e2f6c48b7a05ffb8a32a182c74",
+  "built_at":       "2026-04-18T11:31:39Z",
   "registry":       "ghcr.io/nucleospl/schema-registry-arm64-images",
-  "image":          "ghcr.io/nucleospl/schema-registry-arm64-images/schema-registry:none",
-  "chart_oci":      "oci://ghcr.io/nucleospl/schema-registry-arm64-images/charts/schema-registry:none"
+  "image":          "ghcr.io/nucleospl/schema-registry-arm64-images/schema-registry:8.2.0",
+  "platforms":      ["linux/amd64", "linux/arm64"],
+  "chart_oci":      "oci://ghcr.io/nucleospl/schema-registry-arm64-images/charts/schema-registry:8.2.0"
 }
