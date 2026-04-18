@@ -29,8 +29,17 @@ The first build, or a manual rebuild of a specific version, can be triggered via
 
 ### Docker
 
+The published manifest is multi-arch — Docker will automatically pull the correct image for your platform. You can also request a specific architecture explicitly.
+
 ```bash
+# auto-detect platform (arm64 or amd64)
 docker pull ghcr.io/nucleospl/schema-registry-arm64-images/schema-registry:8.2.0
+
+# force arm64
+docker pull --platform linux/arm64 ghcr.io/nucleospl/schema-registry-arm64-images/schema-registry:8.2.0
+
+# force amd64
+docker pull --platform linux/amd64 ghcr.io/nucleospl/schema-registry-arm64-images/schema-registry:8.2.0
 ```
 
 Required environment variables:
